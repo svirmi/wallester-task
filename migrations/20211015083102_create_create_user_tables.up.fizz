@@ -1,0 +1,8 @@
+create_table("customers") {
+  t.Column("id", "uuid", {primary: true})
+  t.Column("first_name", "string", {"size": 100})
+  t.Column("last_name", "string", {"size": 100})
+  t.Column("birth_date", "datetime", {})
+  t.Column("email", "string", {})
+  t.Column("gender", "string", {"size": 25})
+}

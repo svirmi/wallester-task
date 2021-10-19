@@ -1,0 +1,48 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Customers</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/notie.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">All Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customers">Add new customer</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{{block "content" .}}
+{{end}}
+
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/datepicker.min.js"></script>
+<script src="/static/js/notie.min.js"></script>
+<script src="/static/js/sweetalert.js"></script>
+<script src="/static/js/app.js"></script>
+
+{{block "js" .}}
+{{end}}
+
+<script>
+</script>
+</body>
+</html>
+{{end}}
