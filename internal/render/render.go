@@ -9,9 +9,13 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"time"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"add":        Add,
+	"formatDate": FormatDate,
+}
 
 var app *config.App
 var pathToTemplates = "./templates"
@@ -21,11 +25,22 @@ func SetRenderApp(a *config.App) {
 	app = a
 }
 
+// AddDefaultData sets default template data
 func AddDefaultData(tmplData *models.TemplateData, r *http.Request) *models.TemplateData {
 	tmplData.Flash = app.Session.PopString(r.Context(), "flash")
 	tmplData.Error = app.Session.PopString(r.Context(), "error")
 	tmplData.CSRFToken = nosurf.Token(r)
 	return tmplData
+}
+
+// Add returns a and b sum result
+func Add(a, b int) int {
+	return a + b
+}
+
+// FormatDate returns date in YYYY-MM-DD format
+func FormatDate(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 // Template renders templates using http/template

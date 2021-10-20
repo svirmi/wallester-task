@@ -14,11 +14,15 @@ func routes() http.Handler {
 	mux.Use(LoadSession)
 	mux.Use(NoSurf)
 
-	mux.Get("/", handlers.Repo.ShowAllCustomers)
-	mux.Get("/customer/{id}", handlers.Repo.ShowCustomer)
+	mux.Get("/", handlers.Repo.ShowHomePage)
+	mux.Get("/customers", handlers.Repo.ShowAllCustomers)
+
+	mux.Get("/customer/{id}/view", handlers.Repo.ShowCustomer)
+	mux.Get("/customer/{id}", handlers.Repo.ShowCustomerForm)
+	mux.Post("/customer/{id}", handlers.Repo.EditCustomer)
+
 	mux.Get("/customer", handlers.Repo.ShowCustomerForm)
 	mux.Post("/customer", handlers.Repo.AddCustomer)
-	mux.Post("/customer/{id}", handlers.Repo.EditCustomer)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

@@ -1,13 +1,17 @@
 {{template "base" .}}
 
 {{define "content"}}
+    {{$customer := index .Data "customer"}}
+    {{$actionText := "Add new customer"}}
+    {{if ne $customer.Uuid ""}}
+        {{$actionText = "Edit customer"}}
+    {{end}}
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="text-center mt-4">Add new customer:</h1>
+                <h1 class="text-center mt-4">{{$actionText}}</h1>
 
-                {{$customer := index .Data "customer"}}
-                <form action="/customer" method="post" novalidate>
+                <form action="/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
                     <div class="form-group mt-3">
@@ -48,21 +52,21 @@
 
                     <div class="form-group mt-3">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="gender_male">
+                            <input class="form-check-input" type="radio" name="gender" id="gender_male" value="male" checked>
                             <label class="form-check-label" for="gender_male">
                                 Male
                             </label>
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="gender_female" checked>
+                            <input class="form-check-input" type="radio" name="gender" id="gender_female" value="female">
                             <label class="form-check-label" for="gender_female">
                                 Female
                             </label>
                         </div>
                     </div>
 
-                    <input type="submit" class="btn btn-primary mt-3" value="Add Customer">
+                    <input type="submit" class="btn btn-primary mt-3" value="{{$actionText}}">
                 </form>
             </div>
         </div>

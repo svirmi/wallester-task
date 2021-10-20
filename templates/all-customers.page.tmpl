@@ -1,15 +1,65 @@
 {{template "base" .}}
 
+{{define "css"}}
+    <link rel="stylesheet" type="text/css" href="/static/css/customers.css">
+{{end}}
+
 {{define "content"}}
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1 class="text-center mt-4">The list of customers:</h1>
+            <h1 class="text-center mt-4">List of customers:</h1>
+            {{$customers := index .Data "customers"}}
+            <table class="table table-striped table-hover mt-4" id="table_customers">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Birthdate</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Created at</th>
+                    <th>Updated at</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{$i := 0}}
+                {{range $customers}}
+                    <tr>
+                        <td uuid="{{.Uuid}}">{{add $i 1}}</td>
+                        <td>{{.LastName}}</td>
+                        <td>{{.FirstName}}</td>
+                        <td>{{formatDate .Birthdate}}</td>
+                        <td>{{.Email}}</td>
+                        <td>{{.Gender}}</td>
+                        <td>{{formatDate .CreatedAt}}</td>
+                        <td>{{formatDate .UpdatedAt}}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="/customer/{{.Uuid}}/view">
+                                        <img src="/static/images/view.png" title="Show" class="action_icon"/>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="/customer/{{.Uuid}}">
+                                        <img src="/static/images/edit.png" title="Edit" class="action_icon"/>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                {{end}}
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="row">
         <div class="col text-center">
-            <a href="/customers" class="btn btn-success">Add new customer</a>
+            <a href="/customer" class="btn btn-success">Add new customer</a>
         </div>
     </div>
 </div>

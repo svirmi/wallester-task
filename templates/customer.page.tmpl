@@ -1,0 +1,40 @@
+{{template "base" .}}
+
+{{define "content"}}
+    {{$customer := index .Data "customer"}}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-5">Customer #{{$customer.Uuid}}</h3>
+                <table class="table table-striped">
+                    <thead></thead>
+                    <tbody>
+                        <tr>
+                            <td>First Name:</td>
+                            <td>{{$customer.FirstName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Last Name:</td>
+                            <td>{{$customer.LastName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Birthdate:</td>
+                            <td>{{$customer.Birthdate}}</td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>{{$customer.Email}}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender:</td>
+                            <td>{{$customer.Gender}}</td>
+                        </tr>
+                        <tr>
+                            <td><a href="/customer/{{$customer.Uuid}}" class="btn btn-warning">Edit the customer</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{{end}}

@@ -1,15 +1,17 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 // Customer is the customer model
 type Customer struct {
-	ID        string
+	Uuid      string
 	FirstName string
 	LastName  string
 	Birthdate string
 	Email     string
 	Gender    string
-	CreateAt  time.Time
-	UpdateAt  time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
