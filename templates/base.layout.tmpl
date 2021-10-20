@@ -22,7 +22,7 @@
                     <a class="nav-link active" aria-current="page" href="/">All Customers</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/customers">Add new customer</a>
+                    <a class="nav-link" href="/customer">Add new customer</a>
                 </li>
             </ul>
         </div>
@@ -42,6 +42,21 @@
 {{end}}
 
 <script>
+    function notify(msg, msgType) {
+        notie.alert({
+            type: msgType,
+            text: msg
+        })
+    }
+
+    {{with .Error}}
+    notify("{{.}}", "error")
+    {{end}}
+
+    {{with .Flash}}
+    notify("{{.}}", "success")
+    {{end}}
+
 </script>
 </body>
 </html>

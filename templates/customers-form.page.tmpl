@@ -1,0 +1,81 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mt-4">Add new customer:</h1>
+
+                {{$customer := index .Data "customer"}}
+                <form action="/customer" method="post" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+                    <div class="form-group mt-3">
+                        <label for="first_name">First Name:</label>
+                        {{with .Form.Errors.Get "first_name"}}
+                            <label for="first_name">{{.}}</label>
+                        {{end}}
+                        <input type="text" name="first_name" id="first_name" autocomplete="off" value="{{$customer.FirstName}}" required
+                        class="form-control{{with .Form.Errors.Get "first_name"}} is-invalid {{end}}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="last_name">Last Name:</label>
+                        {{with .Form.Errors.Get "last_name"}}
+                            <label for="last_name">{{.}}</label>
+                        {{end}}
+                        <input type="text" name="last_name" id="last_name" autocomplete="off" value="{{$customer.LastName}}" required
+                        class="form-control{{with .Form.Errors.Get "last_name"}} is-invalid {{end}}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="birth_date">Birthdate:</label>
+                        {{with .Form.Errors.Get "birthdate"}}
+                            <label for="birthdate">{{.}}</label>
+                        {{end}}
+                        <input type="text" name="birthdate" id="birthdate" autocomplete="off" value="{{$customer.Birthdate}}" required
+                        class="form-control{{with .Form.Errors.Get "birthdate"}} is-invalid {{end}}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="email">Email:</label>
+                        {{with .Form.Errors.Get "email"}}
+                            <label for="email">{{.}}</label>
+                        {{end}}
+                        <input type="text" name="email" id="email" autocomplete="off" value="{{$customer.Email}}" required
+                        class="form-control{{with .Form.Errors.Get "email"}} is-invalid {{end}}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" id="gender_male">
+                            <label class="form-check-label" for="gender_male">
+                                Male
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" id="gender_female" checked>
+                            <label class="form-check-label" for="gender_female">
+                                Female
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary mt-3" value="Add Customer">
+                </form>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        const elem = document.querySelector('input[name="birthdate"]');
+        const datepicker = new Datepicker(elem, {
+            format: "yyyy-mm-dd",
+            minDate: "1986-10-10",
+            maxDate: "2010-10-10"
+        });
+    </script>
+{{end}}

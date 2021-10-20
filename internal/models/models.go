@@ -7,7 +7,7 @@ type Customer struct {
 	ID        string
 	FirstName string
 	LastName  string
-	BirthDate time.Time
+	Birthdate string
 	Email     string
 	Gender    string
 	CreateAt  time.Time

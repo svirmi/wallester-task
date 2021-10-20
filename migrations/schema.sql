@@ -42,7 +42,7 @@ CREATE TABLE public.customers (
     id uuid NOT NULL,
     first_name character varying(100) NOT NULL,
     last_name character varying(100) NOT NULL,
-    birth_date timestamp with time zone NOT NULL,
+    birthdate timestamp with time zone NOT NULL,
     email character varying(255) NOT NULL,
     gender character varying(25) NOT NULL,
     created_at timestamp without time zone NOT NULL,

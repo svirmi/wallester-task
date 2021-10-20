@@ -5,6 +5,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // Form custom form struct, embeds an url.Values object
@@ -32,8 +33,12 @@ func (f *Form) CheckRequiredFields(fields ...string) {
 
 // MaxLength check for string minimum length
 func (f *Form) MaxLength(field string, length int) bool {
+	if len(f.Get(field)) == 0 {
+		f.Errors.Add(field, "This field can not be empty")
+		return false
+	}
 	if len(f.Get(field)) > length {
-		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
+		f.Errors.Add(field, fmt.Sprintf("This field must be less than %d characters long", length))
 		return false
 	}
 	return true
@@ -49,4 +54,13 @@ func (f *Form) IsEmail(field string) {
 // Valid returns true if there are no errors, otherwise false
 func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
+}
+
+// IsValidBirthdate checks for valid birthdate. Checks valid age in case if min age or max age given
+func (f *Form) IsValidBirthdate(field string, minAge, maxAge int) {
+	layout := "2006-01-02"
+	_, err := time.Parse(layout, f.Get(field))
+	if err != nil {
+		f.Errors.Add(field, "Invalid birthdate")
+	}
 }
