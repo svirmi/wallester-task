@@ -57,17 +57,44 @@ func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
 }
 
-// IsValidBirthdate checks for valid birthdate. Checks valid age in case if min age or max age given
-func (f *Form) IsValidBirthdate(field string, minAge, maxAge int) {
+// IsValidDate checks for valid date
+func (f *Form) IsValidDate(field string) (time.Time, bool) {
 	layout := "2006-01-02"
-	_, err := time.Parse(layout, f.Get(field))
+	birthdate, err := time.Parse(layout, f.Get(field))
 	if err != nil {
 		f.Errors.Add(field, "Invalid birthdate")
+		return time.Time{}, false
 	}
+
+	return birthdate, true
+}
+
+// IsValidAge checks valid age in case if min age or max age given
+func (f *Form) IsValidAge(field string, date time.Time, minAge, maxAge int) {
+	if minAge != 0 || maxAge != 0 {
+		age := getAge(date)
+		if minAge != 0 && maxAge != 0 && (age < minAge || age > maxAge) {
+			f.Errors.Add(field, fmt.Sprintf("Age should be more than %d and less than %d", minAge, maxAge))
+		} else if minAge != 0 && age < minAge {
+			f.Errors.Add(field, fmt.Sprintf("Age should be more than %d", minAge))
+		} else if maxAge != 0 && age > maxAge {
+			f.Errors.Add(field, fmt.Sprintf("Age should be less than %d", maxAge))
+		}
+	}
+
 }
 
 func (f *Form) IsValidGender(field string) {
 	if !enums.Exists(f.Get(field)) {
 		f.Errors.Add(field, "Please select gender")
 	}
+}
+
+func getAge(birthday time.Time) int {
+	now := time.Now()
+	years := now.Year() - birthday.Year()
+	if now.YearDay() < birthday.YearDay() {
+		years--
+	}
+	return years
 }

@@ -31,7 +31,7 @@
                         <td id="{{.Uuid}}">{{add $i 1}}</td>
                         <td>{{.LastName}}</td>
                         <td>{{.FirstName}}</td>
-                        <td>{{.Birthdate}}</td>
+                        <td>{{formatDate .Birthdate}}</td>
                         <td>{{.Email}}</td>
                         <td>{{.Gender}}</td>
                         <td>{{formatDate .CreatedAt}}</td>

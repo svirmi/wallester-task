@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // Repo the repository used by handlers
@@ -125,6 +126,8 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 
 	data := make(map[string]interface{})
 	data["customer"] = customer
+	data["minDate"] = time.Now().AddDate(-61, 0, +1)
+	data["maxDate"] = time.Now().AddDate(-18, 0, 0)
 	data["genderMale"] = enums.Male.String()
 	data["genderFemale"] = enums.Female.String()
 
@@ -138,7 +141,6 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	customer := models.Customer{
 		FirstName: formData.Get("first_name"),
 		LastName:  formData.Get("last_name"),
-		Birthdate: formData.Get("birthdate"),
 		Email:     formData.Get("email"),
 		Gender:    formData.Get("gender"),
 	}
@@ -148,7 +150,11 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	form.IsEmail("email")
 	form.MaxLength("first_name", 100)
 	form.MaxLength("last_name", 100)
-	form.IsValidBirthdate("birthdate", 18, 60)
+	birthdate, ok := form.IsValidDate("birthdate")
+	if ok {
+		form.IsValidAge("birthdate", birthdate, 18, 60)
+		customer.Birthdate = birthdate
+	}
 	form.IsValidGender("gender")
 
 	return customer, form
@@ -157,12 +163,14 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 func (repository *Repository) redirectIfInvalidForm(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
 	data := make(map[string]interface{})
 	data["customer"] = customer
+	data["minDate"] = time.Now().AddDate(-60, 0, -1)
+	data["maxDate"] = time.Now().AddDate(-18, 0, +1)
 	data["genderMale"] = enums.Male.String()
 	data["genderFemale"] = enums.Female.String()
 	if err := render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{Form: form, Data: data}); err != nil {
 		log.Fatal("can not render template:", err)
 	}
-	return
+
 }
 
 // AddCustomer handles the posting of a customer from
@@ -179,6 +187,7 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 
 	if !form.Valid() {
 		repository.redirectIfInvalidForm(w, r, customer, form)
+		return
 	}
 
 	u, err := repository.DB.InsertCustomer(customer)
@@ -222,6 +231,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 
 	if !form.Valid() {
 		repository.redirectIfInvalidForm(w, r, customer, form)
+		return
 	}
 	err = repository.DB.UpdateCustomer(customer)
 	if err != nil {

@@ -85,8 +85,8 @@
         const elem = document.querySelector('input[name="birthdate"]');
         const datepicker = new Datepicker(elem, {
             format: "yyyy-mm-dd",
-            minDate: "1986-10-10",
-            maxDate: "2010-10-10"
+            minDate: "{{index .Data "minDate"}}",
+            maxDate: "{{index .Data "maxDate"}}"
         });
     </script>
 {{end}}

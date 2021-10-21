@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestForm_CheckRequiredFields(t *testing.T) {
@@ -62,7 +63,7 @@ func TestForm_IsEmail(t *testing.T) {
 	}
 }
 
-func TestForm_IsValidBirthdate(t *testing.T) {
+func TestForm_IsValidDate(t *testing.T) {
 	tests := []struct {
 		name string
 		args url.Values
@@ -78,7 +79,40 @@ func TestForm_IsValidBirthdate(t *testing.T) {
 				Values: tt.args,
 				Errors: errors(map[string][]string{}),
 			}
-			f.IsValidBirthdate("birthdate", 0, 0)
+			f.IsValidDate("birthdate")
+			if got := f.Errors.Get("birthdate"); got != tt.want {
+				t.Errorf("MaxLength() = %s, want %s", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestForm_IsValidAge(t *testing.T) {
+	currentDate := time.Now()
+
+	type testArgs struct {
+		birthdate time.Time
+		minAge    int
+		maxAge    int
+	}
+
+	tests := []struct {
+		name string
+		args testArgs
+		want string
+	}{
+		{"valid_age", testArgs{currentDate.AddDate(-30, 0, 0), 20, 60}, ""},
+		{"invalid_age_min_limit", testArgs{currentDate.AddDate(-1, 0, 0), 20, 0}, "Age should be more than 20"},
+		{"invalid_age_max_limit", testArgs{currentDate.AddDate(-200, 0, 0), 0, 100}, "Age should be less than 100"},
+		{"invalid_age_limits", testArgs{currentDate.AddDate(-200, 0, 0), 20, 100}, "Age should be more than 20 and less than 100"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := &Form{
+				Values: url.Values{},
+				Errors: errors(map[string][]string{}),
+			}
+			f.IsValidAge("birthdate", tt.args.birthdate, tt.args.minAge, tt.args.maxAge)
 			if got := f.Errors.Get("birthdate"); got != tt.want {
 				t.Errorf("MaxLength() = %s, want %s", got, tt.want)
 			}
