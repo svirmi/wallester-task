@@ -3,6 +3,7 @@ package forms
 import (
 	"fmt"
 	"github.com/asaskevich/govalidator"
+	"github.com/ekateryna-tln/wallester_task/internal/enums"
 	"net/url"
 	"strings"
 	"time"
@@ -62,5 +63,11 @@ func (f *Form) IsValidBirthdate(field string, minAge, maxAge int) {
 	_, err := time.Parse(layout, f.Get(field))
 	if err != nil {
 		f.Errors.Add(field, "Invalid birthdate")
+	}
+}
+
+func (f *Form) IsValidGender(field string) {
+	if !enums.Exists(f.Get(field)) {
+		f.Errors.Add(field, "Please select gender")
 	}
 }

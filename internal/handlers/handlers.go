@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ekateryna-tln/wallester_task/internal/config"
 	"github.com/ekateryna-tln/wallester_task/internal/driver"
+	"github.com/ekateryna-tln/wallester_task/internal/enums"
 	"github.com/ekateryna-tln/wallester_task/internal/forms"
 	"github.com/ekateryna-tln/wallester_task/internal/models"
 	"github.com/ekateryna-tln/wallester_task/internal/render"
@@ -131,6 +132,8 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 
 	data := make(map[string]interface{})
 	data["customer"] = customer
+	data["genderMale"] = enums.Male.String()
+	data["genderFemale"] = enums.Female.String()
 
 	err := render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{
 		Form: forms.New(nil),
@@ -157,6 +160,7 @@ func (repository *Repository) GetCustomerFromIncomingForm(formData url.Values) (
 	form.MaxLength("first_name", 100)
 	form.MaxLength("last_name", 100)
 	form.IsValidBirthdate("birthdate", 18, 60)
+	form.IsValidGender("gender")
 
 	return customer, form
 }
@@ -176,14 +180,19 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["customer"] = customer
-		render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{
+		data["genderMale"] = enums.Male.String()
+		data["genderFemale"] = enums.Female.String()
+		err = render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
 		})
+		if err != nil {
+			log.Fatal("can not render template:", err)
+		}
 		return
 	}
 
-	uuid, err := repository.DB.InsertCustomer(customer)
+	u, err := repository.DB.InsertCustomer(customer)
 	if err != nil {
 		log.Println("can not insert a new customer to the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not add a new customer")
@@ -191,7 +200,7 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	repository.App.Session.Put(r.Context(), "flash", fmt.Sprintf("Customer created successfully. Customer identifier: %s", uuid))
+	repository.App.Session.Put(r.Context(), "flash", fmt.Sprintf("Customer created successfully. Customer identifier: %s", u))
 	http.Redirect(w, r, "/customers", http.StatusSeeOther)
 }
 
@@ -225,10 +234,15 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["customer"] = customer
-		render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{
+		data["genderMale"] = enums.Male.String()
+		data["genderFemale"] = enums.Female.String()
+		err = render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
 		})
+		if err != nil {
+			log.Fatal("can not render template:", err)
+		}
 		return
 	}
 	err = repository.DB.UpdateCustomer(customer)

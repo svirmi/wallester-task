@@ -152,3 +152,28 @@ func TestNew(t *testing.T) {
 		t.Errorf("New() = %v, want %v", got, form)
 	}
 }
+
+func TestForm_GenderIsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		args url.Values
+		want string
+	}{
+		{"empty_gender", url.Values{}, "Please select gender"},
+		{"invalid_gender", url.Values{"gender": {"invalid_gender"}}, "Please select gender"},
+		{"valid_male", url.Values{"gender": {"Male"}}, ""},
+		{"valid_female", url.Values{"gender": {"Female"}}, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := &Form{
+				Values: tt.args,
+				Errors: errors(map[string][]string{}),
+			}
+			f.IsValidGender("gender")
+			if got := f.Errors.Get("gender"); got != tt.want {
+				t.Errorf("MaxLength() = %s, want %s", got, tt.want)
+			}
+		})
+	}
+}

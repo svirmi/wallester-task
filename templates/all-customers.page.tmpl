@@ -28,10 +28,10 @@
                 {{$i := 0}}
                 {{range $customers}}
                     <tr>
-                        <td uuid="{{.Uuid}}">{{add $i 1}}</td>
+                        <td id="{{.Uuid}}">{{add $i 1}}</td>
                         <td>{{.LastName}}</td>
                         <td>{{.FirstName}}</td>
-                        <td>{{formatDate .Birthdate}}</td>
+                        <td>{{.Birthdate}}</td>
                         <td>{{.Email}}</td>
                         <td>{{.Gender}}</td>
                         <td>{{formatDate .CreatedAt}}</td>
@@ -40,12 +40,12 @@
                             <div class="row">
                                 <div class="col">
                                     <a href="/customer/{{.Uuid}}/view">
-                                        <img src="/static/images/view.png" title="Show" class="action_icon"/>
+                                        <img src="/static/images/view.png" title="Show" class="action_icon" alt="Show">
                                     </a>
                                 </div>
                                 <div class="col">
                                     <a href="/customer/{{.Uuid}}">
-                                        <img src="/static/images/edit.png" title="Edit" class="action_icon"/>
+                                        <img src="/static/images/edit.png" title="Edit" class="action_icon" alt="Edit">
                                     </a>
                                 </div>
                             </div>

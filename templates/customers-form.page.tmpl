@@ -2,6 +2,8 @@
 
 {{define "content"}}
     {{$customer := index .Data "customer"}}
+    {{$genderMale := index .Data "genderMale"}}
+    {{$genderFemale := index .Data "genderFemale"}}
     {{$actionText := "Add new customer"}}
     {{if ne $customer.Uuid ""}}
         {{$actionText = "Edit customer"}}
@@ -17,7 +19,7 @@
                     <div class="form-group mt-3">
                         <label for="first_name">First Name:</label>
                         {{with .Form.Errors.Get "first_name"}}
-                            <label for="first_name">{{.}}</label>
+                            <label class="text-danger">{{.}}</label>
                         {{end}}
                         <input type="text" name="first_name" id="first_name" autocomplete="off" value="{{$customer.FirstName}}" required
                         class="form-control{{with .Form.Errors.Get "first_name"}} is-invalid {{end}}">
@@ -26,16 +28,16 @@
                     <div class="form-group mt-3">
                         <label for="last_name">Last Name:</label>
                         {{with .Form.Errors.Get "last_name"}}
-                            <label for="last_name">{{.}}</label>
+                            <label class="text-danger">{{.}}</label>
                         {{end}}
                         <input type="text" name="last_name" id="last_name" autocomplete="off" value="{{$customer.LastName}}" required
                         class="form-control{{with .Form.Errors.Get "last_name"}} is-invalid {{end}}">
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="birth_date">Birthdate:</label>
+                        <label for="birthdate">Birthdate:</label>
                         {{with .Form.Errors.Get "birthdate"}}
-                            <label for="birthdate">{{.}}</label>
+                            <label class="text-danger">{{.}}</label>
                         {{end}}
                         <input type="text" name="birthdate" id="birthdate" autocomplete="off" value="{{$customer.Birthdate}}" required
                         class="form-control{{with .Form.Errors.Get "birthdate"}} is-invalid {{end}}">
@@ -44,24 +46,29 @@
                     <div class="form-group mt-3">
                         <label for="email">Email:</label>
                         {{with .Form.Errors.Get "email"}}
-                            <label for="email">{{.}}</label>
+                            <label class="text-danger">{{.}}</label>
                         {{end}}
                         <input type="text" name="email" id="email" autocomplete="off" value="{{$customer.Email}}" required
                         class="form-control{{with .Form.Errors.Get "email"}} is-invalid {{end}}">
                     </div>
 
                     <div class="form-group mt-3">
+                        {{with .Form.Errors.Get "gender"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="gender_male" value="male" checked>
+                            <input class="form-check-input" type="radio" name="gender" id="gender_male"
+                                   value="{{$genderMale}}" {{if or (eq $customer.Gender $genderMale) (eq $customer.Gender "")}}checked{{end}}>
                             <label class="form-check-label" for="gender_male">
-                                Male
+                                {{$genderMale}}
                             </label>
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="gender_female" value="female">
+                            <input class="form-check-input" type="radio" name="gender" id="gender_female"
+                                   value="{{$genderFemale}}" {{if eq $customer.Gender $genderFemale}}checked{{end}}>
                             <label class="form-check-label" for="gender_female">
-                                Female
+                                {{$genderFemale}}
                             </label>
                         </div>
                     </div>
