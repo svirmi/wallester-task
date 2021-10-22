@@ -30,10 +30,7 @@ func main() {
 		Handler: routes(),
 	}
 
-	err = srv.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(srv.ListenAndServe())
 }
 
 func run() (*driver.DB, error) {

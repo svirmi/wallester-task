@@ -15,6 +15,7 @@
 
                 <form action="/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                    <input type="hidden" name="updated_at" value="{{$customer.UpdatedAt}}">
 
                     <div class="form-group mt-3">
                         <label for="first_name">First Name:</label>
@@ -73,7 +74,7 @@
                         </div>
                     </div>
 
-                    <input type="submit" class="btn btn-primary mt-3" value="{{$actionText}}">
+                    <input type="submit" class="btn btn-primary mt-3" value="{{$actionText}}" id="js_customer_form_btn">
                 </form>
             </div>
         </div>
@@ -88,5 +89,24 @@
             minDate: "{{index .Data "minDate"}}",
             maxDate: "{{index .Data "maxDate"}}"
         });
+
+
+        {{$customer := index .Data "customer"}}
+        {{with .OverrideWarning}}
+            Swal.fire({
+                title: `Information about the customer was changed by other administrator.
+                        Do you want to reload the customer page or save your changes (in this case previous changes will be lost)`,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save anyway',
+                denyButtonText: `Reload the page`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('js_customer_form_btn').click()
+                } else if (result.isDenied) {
+                    window.location.href = '/customer/' + {{$customer.Uuid}}
+                }
+            })
+        {{end}}
     </script>
 {{end}}

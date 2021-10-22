@@ -55,14 +55,11 @@ func (dbRepo *postgresDBRepo) SearchCustomers(searchExpression string) ([]models
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	conditions := fmt.Sprintf("where search_field like '%%%s%%'", searchExpression)
-
 	stmt := `
 			select id, first_name, last_name, birthdate, email, gender, created_at, updated_at
-			from customers ` + conditions
+			from customers where search_field like '%' || $1 || '%'`
 
-	fmt.Println(stmt)
-	rows, err := dbRepo.DB.QueryContext(ctx, stmt)
+	rows, err := dbRepo.DB.QueryContext(ctx, stmt, searchExpression)
 	if err != nil {
 		return customers, err
 	}

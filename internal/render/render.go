@@ -31,6 +31,8 @@ func AddDefaultData(tmplData *models.TemplateData, r *http.Request) *models.Temp
 	tmplData.Flash = app.Session.PopString(r.Context(), "flash")
 	tmplData.Error = app.Session.PopString(r.Context(), "error")
 	tmplData.Warning = app.Session.PopString(r.Context(), "warning")
+	tmplData.OverrideWarning = app.Session.PopString(r.Context(), "override_warning")
+	fmt.Println(tmplData.OverrideWarning)
 	tmplData.CSRFToken = nosurf.Token(r)
 	return tmplData
 }

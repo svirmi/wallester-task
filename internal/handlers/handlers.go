@@ -218,7 +218,7 @@ func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, 
 
 }
 
-// AddCustomer handles the posting of a customer from
+// AddCustomer handles the posting of a customer from if add
 func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -247,7 +247,7 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, "/customers", http.StatusSeeOther)
 }
 
-// EditCustomer renders the edit customer page and display form
+// EditCustomer handles the posting of a customer from if edit
 func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Request) {
 	var customer models.Customer
 	var u uuid.UUID
@@ -278,10 +278,26 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 		repository.renderCustomerFormTemplate(w, r, customer, form)
 		return
 	}
+
+	existedCustomer, err := repository.DB.GetCustomerByID(u)
+	if err != nil {
+		log.Println("can not get the customer from the database, ", err)
+		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	if existedCustomer.UpdatedAt.String() != form.Get("updated_at") {
+		customer.UpdatedAt = existedCustomer.UpdatedAt
+		repository.App.Session.Put(r.Context(), "override_warning", "show")
+		repository.renderCustomerFormTemplate(w, r, customer, form)
+		return
+	}
+
 	err = repository.DB.UpdateCustomer(customer)
 	if err != nil {
-		log.Println("can not update a customer:", err)
-		repository.App.Session.Put(r.Context(), "error", "Can not add a new customer")
+		log.Println("can not update the customer:", err)
+		repository.App.Session.Put(r.Context(), "error", "Can not update the customer")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
