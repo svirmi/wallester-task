@@ -13,8 +13,9 @@ import (
 )
 
 var functions = template.FuncMap{
-	"add":        Add,
-	"formatDate": FormatDate,
+	"add":            Add,
+	"formatDate":     FormatDate,
+	"formatDateTime": FormatDateTime,
 }
 
 var app *config.App
@@ -29,6 +30,7 @@ func SetRenderApp(a *config.App) {
 func AddDefaultData(tmplData *models.TemplateData, r *http.Request) *models.TemplateData {
 	tmplData.Flash = app.Session.PopString(r.Context(), "flash")
 	tmplData.Error = app.Session.PopString(r.Context(), "error")
+	tmplData.Warning = app.Session.PopString(r.Context(), "warning")
 	tmplData.CSRFToken = nosurf.Token(r)
 	return tmplData
 }
@@ -38,9 +40,14 @@ func Add(a, b int) int {
 	return a + b
 }
 
-// FormatDate returns date in YYYY-MM-DD format
+// FormatDate returns date in yyyy-MM-dd format
 func FormatDate(t time.Time) string {
 	return t.Format("2006-01-02")
+}
+
+// FormatDateTime returns date in yyyy-MM-dd HH:mm:ss format
+func FormatDateTime(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
 }
 
 // Template renders templates using http/template

@@ -30,6 +30,14 @@
                             <td>{{$customer.Gender}}</td>
                         </tr>
                         <tr>
+                            <td class="col-4">Created at:</td>
+                            <td>{{formatDateTime $customer.CreatedAt}}</td>
+                        </tr>
+                        <tr>
+                            <td class="col-4">Updated at:</td>
+                            <td>{{formatDateTime $customer.UpdatedAt}}</td>
+                        </tr>
+                        <tr>
                             <td class="col-4"><a href="/customer/{{$customer.Uuid}}" class="btn btn-warning">Edit the customer</a></td>
                             <td></td>
                         </tr>

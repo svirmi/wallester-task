@@ -32,7 +32,7 @@ func (f *Form) CheckRequiredFields(fields ...string) {
 	}
 }
 
-// MaxLength check for string minimum length
+// MaxLength check for string maximum length
 func (f *Form) MaxLength(field string, length int) bool {
 	if len(f.Get(field)) == 0 {
 		f.Errors.Add(field, "This field can not be empty")
@@ -40,6 +40,19 @@ func (f *Form) MaxLength(field string, length int) bool {
 	}
 	if len(f.Get(field)) > length {
 		f.Errors.Add(field, fmt.Sprintf("This field must be less than %d characters long", length))
+		return false
+	}
+	return true
+}
+
+// MinLength check for string minimum length
+func (f *Form) MinLength(field string, length int) bool {
+	if len(f.Get(field)) == 0 {
+		f.Errors.Add(field, "This field can not be empty")
+		return false
+	}
+	if len(f.Get(field)) < length {
+		f.Errors.Add(field, fmt.Sprintf("This field must be more than %d characters long", length))
 		return false
 	}
 	return true

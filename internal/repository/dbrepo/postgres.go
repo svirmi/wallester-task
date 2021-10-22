@@ -2,6 +2,7 @@ package dbrepo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/ekateryna-tln/wallester_task/internal/models"
 	"github.com/gofrs/uuid"
@@ -16,8 +17,51 @@ func (dbRepo *postgresDBRepo) GetAllCustomers() ([]models.Customer, error) {
 	var customers []models.Customer
 	stmt := `
 			select id ,first_name, last_name, birthdate, email, gender, created_at, updated_at
-			from customers`
+			from customers
+			order by updated_at desc`
 
+	rows, err := dbRepo.DB.QueryContext(ctx, stmt)
+	if err != nil {
+		return customers, err
+	}
+
+	for rows.Next() {
+		var c models.Customer
+		err = rows.Scan(
+			&c.Uuid,
+			&c.FirstName,
+			&c.LastName,
+			&c.Birthdate,
+			&c.Email,
+			&c.Gender,
+			&c.CreatedAt,
+			&c.UpdatedAt,
+		)
+		if err != nil {
+			return customers, err
+		}
+		customers = append(customers, c)
+	}
+
+	return customers, nil
+}
+
+// SearchCustomers returns a slice of found customers
+func (dbRepo *postgresDBRepo) SearchCustomers(searchExpression string) ([]models.Customer, error) {
+	var customers []models.Customer
+	if searchExpression == "" {
+		return customers, errors.New("no data to search")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	conditions := fmt.Sprintf("where search_field like '%%%s%%'", searchExpression)
+
+	stmt := `
+			select id, first_name, last_name, birthdate, email, gender, created_at, updated_at
+			from customers ` + conditions
+
+	fmt.Println(stmt)
 	rows, err := dbRepo.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return customers, err
@@ -56,8 +100,8 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 	}
 	stmt := `
 			insert into customers
-			(id ,first_name, last_name, birthdate, email, gender, created_at, updated_at)
-			values ($1, $2, $3, $4, $5, $6, $7, $8)`
+			(id ,first_name, last_name, birthdate, email, gender, search_field, created_at, updated_at)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	_, err = dbRepo.DB.ExecContext(ctx, stmt,
 		uuid,
@@ -66,6 +110,7 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 		c.Birthdate,
 		c.Email,
 		c.Gender,
+		c.SearchField,
 		time.Now(),
 		time.Now(),
 	)
@@ -120,7 +165,8 @@ func (dbRepo *postgresDBRepo) UpdateCustomer(c models.Customer) error {
 				birthdate = $4,
 				email = $5,
 				gender = $6, 
-				updated_at = $7
+				search_field = $7, 
+				updated_at = $8
 			where id = $1`
 
 	_, err := dbRepo.DB.ExecContext(ctx, query,
@@ -130,6 +176,7 @@ func (dbRepo *postgresDBRepo) UpdateCustomer(c models.Customer) error {
 		c.Birthdate,
 		c.Email,
 		c.Gender,
+		c.SearchField,
 		time.Now(),
 	)
 

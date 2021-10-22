@@ -19,6 +19,8 @@ function Prompt() {
 
     let error = prompt_alert('error', c)
 
+    let warning = prompt_alert('warning', c)
+
     async function custom(c) {
         const {
             icon = '',
@@ -62,6 +64,7 @@ function Prompt() {
 
     return {
         success: success,
+        warning: warning,
         error: error,
         custom: custom
     }

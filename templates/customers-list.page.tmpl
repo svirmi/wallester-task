@@ -1,0 +1,108 @@
+{{template "base" .}}
+
+{{define "css"}}
+    <link rel="stylesheet" type="text/css" href="/static/css/customers.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/simple-datatable.css">
+{{end}}
+
+{{define "content"}}
+<div class="container">
+
+    <div class="row mt-3 align-items-center">
+        <div class="col-9">
+            <form action="/customers/search" method="post" novalidate>
+                <input type="hidden" name="csrf_token"
+                       value="{{.CSRFToken}}">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group">
+                            <label class="input-group-text" for="search_expression">First name/Last name:</label>
+                            <input type="text" name="search_expression" id="search_expression" autocomplete="off" value="{{index .Data "search_expression"}}" required
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-4 d-flex">
+                        <div class="me-4">
+                            <input type="submit" class="btn btn-primary search-btn" value="Search customer">
+                        </div>
+                        <a href="/customers" class="btn btn-secondary reset-btn">Reset</a>
+                    </div>
+                    <div class="col-4 d-flex">
+                        <div class="me-4">
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-3 d-flex justify-content-end">
+            <a href="/customer" class="btn btn-success">Add new customer</a>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col">
+            <h3 class="text-center mt-2">List of customers:</h3>
+            {{$customers := index .Data "customers"}}
+            <table class="table table-striped table-hover mt-4 border-top" id="js_table_customers">
+                <thead>
+                <tr>
+                    <th>ID&nbsp;&nbsp;</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Birthdate</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Created at</th>
+                    <th>Updated at</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{$i := 0}}
+                {{range $customers}}
+                    {{$i = add $i 1}}
+                    <tr>
+                        <td id="{{.Uuid}}">{{$i}}</td>
+                        <td>{{.FirstName}}</td>
+                        <td>{{.LastName}}</td>
+                        <td>{{formatDate .Birthdate}}</td>
+                        <td>{{.Email}}</td>
+                        <td>{{.Gender}}</td>
+                        <td>{{formatDateTime .CreatedAt}}</td>
+                        <td>{{formatDateTime .UpdatedAt}}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="/customer/{{.Uuid}}/view">
+                                        <img src="/static/images/view.png" title="Show" class="action_icon" alt="Show">
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="/customer/{{.Uuid}}">
+                                        <img src="/static/images/edit.png" title="Edit" class="action_icon" alt="Edit">
+                                    </a>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "js"}}
+    <script src="/static/js/simple-datatables.js"></script>
+    <script>
+        const dataTable = new simpleDatatables.DataTable("#js_table_customers", {
+            columns: [
+                { select: [8], sortable: false },
+            ]
+        })
+    </script>
+{{end}}

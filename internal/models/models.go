@@ -13,6 +13,7 @@ type Customer struct {
 	BirthdateForm string
 	Email         string
 	Gender        string
+	SearchField   string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

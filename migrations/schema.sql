@@ -45,6 +45,7 @@ CREATE TABLE public.customers (
     birthdate timestamp with time zone NOT NULL,
     email character varying(255) NOT NULL,
     gender character varying(25) NOT NULL,
+    search_field character varying(210) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

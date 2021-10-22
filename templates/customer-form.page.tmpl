@@ -11,7 +11,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="text-center mt-4">{{$actionText}}</h1>
+                <h3 class="text-center mt-4">{{$actionText}}</h3>
 
                 <form action="/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
@@ -48,7 +48,7 @@
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="text" name="email" id="email" autocomplete="off" value="{{$customer.Email}}" required
+                        <input type="text" name="email" id="email" autocomplete="on" value="{{$customer.Email}}" required
                         class="form-control{{with .Form.Errors.Get "email"}} is-invalid {{end}}">
                     </div>
 

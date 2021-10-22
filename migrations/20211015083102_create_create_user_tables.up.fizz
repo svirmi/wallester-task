@@ -5,4 +5,5 @@ create_table("customers") {
   t.Column("birthdate", "datetime", {})
   t.Column("email", "string", {})
   t.Column("gender", "string", {"size": 25})
+  t.Column("search_field", "string", {"size": 210})
 }

@@ -16,6 +16,7 @@ func routes() http.Handler {
 
 	mux.Get("/", handlers.Repo.ShowHomePage)
 	mux.Get("/customers", handlers.Repo.ShowAllCustomers)
+	mux.Post("/customers/search", handlers.Repo.SearchCustomers)
 
 	mux.Get("/customer/{id}/view", handlers.Repo.ShowCustomer)
 	mux.Get("/customer/{id}", handlers.Repo.ShowCustomerForm)

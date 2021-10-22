@@ -121,6 +121,9 @@ func TestForm_IsValidAge(t *testing.T) {
 }
 
 func TestForm_MaxLength(t *testing.T) {
+	invalidFieldMaxLength := 3
+	validFieldMaxLength := 50
+
 	type args struct {
 		field  string
 		length int
@@ -131,8 +134,11 @@ func TestForm_MaxLength(t *testing.T) {
 		want string
 	}{
 		{"empty_field", args{}, "This field can not be empty"},
-		{"invalid_field", args{field: "some_field", length: 3}, fmt.Sprintf("This field must be less than %d characters long", 3)},
-		{"valid_field", args{field: "some_field", length: 50}, ""},
+		{"invalid_field",
+			args{field: "some_field", length: invalidFieldMaxLength},
+			fmt.Sprintf("This field must be less than %d characters long", invalidFieldMaxLength),
+		},
+		{"valid_field", args{field: "some_field", length: validFieldMaxLength}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -147,6 +153,44 @@ func TestForm_MaxLength(t *testing.T) {
 			f.MaxLength(tt.args.field, tt.args.length)
 			if got := f.Errors.Get(tt.args.field); got != tt.want {
 				t.Errorf("MaxLength() = %s, want %s", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestForm_MinLength(t *testing.T) {
+	invalidFieldMinLength := 50
+	validFieldMinLength := 3
+
+	type args struct {
+		field  string
+		length int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"empty_field", args{}, "This field can not be empty"},
+		{"invalid_field",
+			args{field: "some_field", length: invalidFieldMinLength},
+			fmt.Sprintf("This field must be more than %d characters long", invalidFieldMinLength),
+		},
+		{"valid_field", args{field: "some_field", length: validFieldMinLength}, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			formData := url.Values{}
+			if tt.args.field != "" {
+				formData.Add(tt.args.field, tt.args.field)
+			}
+			f := &Form{
+				Values: formData,
+				Errors: errors(map[string][]string{}),
+			}
+			f.MinLength(tt.args.field, tt.args.length)
+			if got := f.Errors.Get(tt.args.field); got != tt.want {
+				t.Errorf("MinLength() = %s, want %s", got, tt.want)
 			}
 		})
 	}

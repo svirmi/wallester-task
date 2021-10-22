@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -61,7 +62,53 @@ func (repository *Repository) ShowAllCustomers(w http.ResponseWriter, r *http.Re
 
 	data := make(map[string]interface{})
 	data["customers"] = customers
-	if err = render.Template(w, r, "all-customers.page.tmpl", &models.TemplateData{Data: data}); err != nil {
+	if err = render.Template(w, r, "customers-list.page.tmpl", &models.TemplateData{Form: forms.New(nil), Data: data}); err != nil {
+		log.Fatal("can not render template:", err)
+	}
+}
+
+// SearchCustomers renders the search customer page
+func (repository *Repository) SearchCustomers(w http.ResponseWriter, r *http.Request) {
+	minSearchLen := 3
+	err := r.ParseForm()
+	if err != nil {
+		log.Println("can not parse form:", err)
+		repository.App.Session.Put(r.Context(), "error", "Something went wrong. Please contact to customer support.")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	searchExpression := form.Get("search_expression")
+
+	if !form.MinLength("search_expression", minSearchLen) {
+		repository.App.Session.Put(r.Context(), "warning", fmt.Sprintf("Search field must to have at list %d characters", minSearchLen))
+		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		return
+	}
+
+	if searchExpression == "" {
+		repository.App.Session.Put(r.Context(), "warning", "Please enter First name or Last name to search")
+		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		return
+	}
+
+	var customers []models.Customer
+	customers, err = repository.DB.SearchCustomers(strings.ToLower(searchExpression))
+	if err != nil {
+		log.Println("can not get customer search result, ", err)
+		repository.App.Session.Put(r.Context(), "error", "Could not get customers")
+		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["customers"] = customers
+	data["search_expression"] = searchExpression
+	if err = render.Template(w, r, "customers-list.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	}); err != nil {
 		log.Fatal("can not render template:", err)
 	}
 }
@@ -106,43 +153,38 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 
 	var customer models.Customer
 	id := chi.URLParam(r, "id")
-	if id != "" {
-		u, err := uuid.FromString(id)
-		if err != nil {
-			log.Println("wrong uuid was given:", err)
-			repository.App.Session.Put(r.Context(), "error", "Can not edit the customer")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
-			return
-		}
-
-		customer, err = repository.DB.GetCustomerByID(u)
-		if err != nil {
-			log.Println("can not get the customer from the database, ", err)
-			repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
-			return
-		}
+	if id == "" {
+		repository.renderCustomerFormTemplate(w, r, customer, forms.New(nil))
+		return
 	}
 
-	data := make(map[string]interface{})
-	data["customer"] = customer
-	data["minDate"] = time.Now().AddDate(-61, 0, +1)
-	data["maxDate"] = time.Now().AddDate(-18, 0, 0)
-	data["genderMale"] = enums.Male.String()
-	data["genderFemale"] = enums.Female.String()
-
-	if err := render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{Form: forms.New(nil), Data: data}); err != nil {
-		log.Fatal("can not render template:", err)
+	u, err := uuid.FromString(id)
+	if err != nil {
+		log.Println("wrong uuid was given:", err)
+		repository.App.Session.Put(r.Context(), "error", "Can not edit the customer")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
+
+	customer, err = repository.DB.GetCustomerByID(u)
+	if err != nil {
+		log.Println("can not get the customer from the database, ", err)
+		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	repository.renderCustomerFormTemplate(w, r, customer, forms.New(nil))
 }
 
 func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (models.Customer, *forms.Form) {
 
 	customer := models.Customer{
-		FirstName: formData.Get("first_name"),
-		LastName:  formData.Get("last_name"),
-		Email:     formData.Get("email"),
-		Gender:    formData.Get("gender"),
+		FirstName:   formData.Get("first_name"),
+		LastName:    formData.Get("last_name"),
+		Email:       formData.Get("email"),
+		Gender:      formData.Get("gender"),
+		SearchField: strings.ToLower(formData.Get("first_name") + " " + formData.Get("last_name")),
 	}
 
 	form := forms.New(formData)
@@ -160,14 +202,17 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	return customer, form
 }
 
-func (repository *Repository) redirectIfInvalidForm(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
+func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
 	data := make(map[string]interface{})
 	data["customer"] = customer
 	data["minDate"] = time.Now().AddDate(-60, 0, -1)
 	data["maxDate"] = time.Now().AddDate(-18, 0, +1)
 	data["genderMale"] = enums.Male.String()
 	data["genderFemale"] = enums.Female.String()
-	if err := render.Template(w, r, "customers-form.page.tmpl", &models.TemplateData{Form: form, Data: data}); err != nil {
+	if err := render.Template(w, r, "customer-form.page.tmpl", &models.TemplateData{
+		Form: form,
+		Data: data,
+	}); err != nil {
 		log.Fatal("can not render template:", err)
 	}
 
@@ -186,7 +231,7 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 	customer, form := repository.getCustomerFromIncomingForm(r.PostForm)
 
 	if !form.Valid() {
-		repository.redirectIfInvalidForm(w, r, customer, form)
+		repository.renderCustomerFormTemplate(w, r, customer, form)
 		return
 	}
 
@@ -230,7 +275,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	customer.Uuid = u.String()
 
 	if !form.Valid() {
-		repository.redirectIfInvalidForm(w, r, customer, form)
+		repository.renderCustomerFormTemplate(w, r, customer, form)
 		return
 	}
 	err = repository.DB.UpdateCustomer(customer)
