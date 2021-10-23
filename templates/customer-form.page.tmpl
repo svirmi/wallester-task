@@ -4,21 +4,26 @@
     {{$customer := index .Data "customer"}}
     {{$genderMale := index .Data "genderMale"}}
     {{$genderFemale := index .Data "genderFemale"}}
-    {{$actionText := "Add new customer"}}
+    {{$pageHeader := ""}}
+    {{$actionText := ""}}
     {{if ne $customer.Uuid ""}}
-        {{$actionText = "Edit customer"}}
+        {{$pageHeader = getTranslation "page_header_add_new_customer"}}
+        {{$actionText = getTranslation "button_edit_customer"}}
+    {{else}}
+        {{$pageHeader = getTranslation "page_header_edit_customer"}}
+        {{$actionText = getTranslation "button_add_new_customer"}}
     {{end}}
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3 class="text-center mt-4">{{$actionText}}</h3>
+                <h3 class="text-center mt-4">{{$pageHeader}}</h3>
 
-                <form action="/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
+                <form action="/{{.CurrentLanguage}}/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
                     <input type="hidden" name="updated_at" value="{{$customer.UpdatedAt}}">
 
                     <div class="form-group mt-3">
-                        <label for="first_name">First Name:</label>
+                        <label for="first_name">{{getTranslation "first_name"}}:</label>
                         {{with .Form.Errors.Get "first_name"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
@@ -27,7 +32,7 @@
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="last_name">Last Name:</label>
+                        <label for="last_name">{{getTranslation "last_name"}}:</label>
                         {{with .Form.Errors.Get "last_name"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
@@ -36,7 +41,7 @@
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="birthdate">Birthdate:</label>
+                        <label for="birthdate">{{getTranslation "birthdate"}}:</label>
                         {{with .Form.Errors.Get "birthdate"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
@@ -45,7 +50,7 @@
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="email">Email:</label>
+                        <label for="email">{{getTranslation "email"}}:</label>
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
@@ -104,7 +109,7 @@
                 if (result.isConfirmed) {
                     document.getElementById('js_customer_form_btn').click()
                 } else if (result.isDenied) {
-                    window.location.href = '/customer/' + {{$customer.Uuid}}
+                    window.location.href = '/{{.CurrentLanguage}}/customer/' + {{$customer.Uuid}}
                 }
             })
         {{end}}

@@ -6,6 +6,7 @@ import (
 	"github.com/ekateryna-tln/wallester_task/internal/config"
 	"github.com/ekateryna-tln/wallester_task/internal/models"
 	"github.com/justinas/nosurf"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -16,6 +17,7 @@ var functions = template.FuncMap{
 	"add":            Add,
 	"formatDate":     FormatDate,
 	"formatDateTime": FormatDateTime,
+	"getTranslation": GetTranslation,
 }
 
 var app *config.App
@@ -26,6 +28,20 @@ func SetRenderApp(a *config.App) {
 	app = a
 }
 
+// GetTranslation returns translation for given key
+func GetTranslation(key string) string {
+	localizeConfigIndex := i18n.LocalizeConfig{
+		MessageID: key,
+	}
+
+	translation, err := app.Locales.Localize(&localizeConfigIndex)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("translation key not found %s", key))
+		return key
+	}
+	return translation
+}
+
 // AddDefaultData sets default template data
 func AddDefaultData(tmplData *models.TemplateData, r *http.Request) *models.TemplateData {
 	tmplData.Flash = app.Session.PopString(r.Context(), "flash")
@@ -34,6 +50,9 @@ func AddDefaultData(tmplData *models.TemplateData, r *http.Request) *models.Temp
 	tmplData.OverrideWarning = app.Session.PopString(r.Context(), "override_warning")
 	fmt.Println(tmplData.OverrideWarning)
 	tmplData.CSRFToken = nosurf.Token(r)
+	tmplData.CurrentLanguage = app.CurrentLocale
+	tmplData.AllowedLocales = app.AllowedLocales
+	tmplData.CurrentUrlWithoutLocale = app.CurrentUrlWithoutLocale
 	return tmplData
 }
 

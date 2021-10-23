@@ -13,17 +13,20 @@ func routes() http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(LoadSession)
 	mux.Use(NoSurf)
+	mux.Use(Test)
 
-	mux.Get("/", handlers.Repo.ShowHomePage)
-	mux.Get("/customers", handlers.Repo.ShowAllCustomers)
-	mux.Post("/customers/search", handlers.Repo.SearchCustomers)
+	mux.Get("/{locale}", handlers.Repo.ShowHomePage)
+	mux.Get("/{locale}/customers", handlers.Repo.ShowAllCustomers)
+	mux.Post("/{locale}/customers/search", handlers.Repo.SearchCustomers)
 
-	mux.Get("/customer/{id}/view", handlers.Repo.ShowCustomer)
-	mux.Get("/customer/{id}", handlers.Repo.ShowCustomerForm)
-	mux.Post("/customer/{id}", handlers.Repo.EditCustomer)
+	mux.Get("/{locale}/customer/{id}/view", handlers.Repo.ShowCustomer)
+	mux.Get("/{locale}/customer/{id}", handlers.Repo.ShowCustomerForm)
+	mux.Post("/{locale}/customer/{id}", handlers.Repo.EditCustomer)
 
-	mux.Get("/customer", handlers.Repo.ShowCustomerForm)
-	mux.Post("/customer", handlers.Repo.AddCustomer)
+	mux.Get("/{locale}/customer", handlers.Repo.ShowCustomerForm)
+	mux.Post("/{locale}/customer", handlers.Repo.AddCustomer)
+
+	mux.Get("/*", handlers.Repo.PageNotFound)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

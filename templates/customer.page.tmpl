@@ -5,40 +5,44 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3 class="mt-5">Customer #{{$customer.Uuid}}</h3>
+                <h3 class="mt-5">{{getTranslation "page_header_customer"}} #{{$customer.Uuid}}</h3>
                 <table class="table table-striped">
                     <thead></thead>
                     <tbody>
                         <tr>
-                            <td class="col-4">First Name:</td>
+                            <td class="col-4">{{getTranslation "first_name"}}:</td>
                             <td>{{$customer.FirstName}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Last Name:</td>
+                            <td class="col-4">{{getTranslation "last_name"}}:</td>
                             <td>{{$customer.LastName}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Birthdate:</td>
+                            <td class="col-4">{{getTranslation "birthdate"}}:</td>
                             <td>{{formatDate $customer.Birthdate}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Email:</td>
+                            <td class="col-4">{{getTranslation "email"}}:</td>
                             <td>{{$customer.Email}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Gender:</td>
+                            <td class="col-4">{{getTranslation "gender"}}:</td>
                             <td>{{$customer.Gender}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Created at:</td>
+                            <td class="col-4">{{getTranslation "created_at"}}:</td>
                             <td>{{formatDateTime $customer.CreatedAt}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4">Updated at:</td>
+                            <td class="col-4">{{getTranslation "updated_at"}}:</td>
                             <td>{{formatDateTime $customer.UpdatedAt}}</td>
                         </tr>
                         <tr>
-                            <td class="col-4"><a href="/customer/{{$customer.Uuid}}" class="btn btn-warning">Edit the customer</a></td>
+                            <td class="col-4">
+                                <a href="/{{.CurrentLanguage}}/customer/{{$customer.Uuid}}" class="btn btn-warning">
+                                    {{getTranslation "button_edit_customer"}}
+                                </a>
+                            </td>
                             <td></td>
                         </tr>
                     </tbody>

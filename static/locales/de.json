@@ -1,0 +1,22 @@
+{
+  "page_title_home": "Kunden",
+  "menu_item_home": "Zuhause",
+  "menu_item_all_customers": "Alle Kunden",
+  "menu_item_add_new_customer": "Neuen Kunden hinzufügen",
+  "page_header_customer": "Kunden",
+  "page_header_list_of_customer": "Liste der Kunden",
+  "page_header_edit_customer": "Bearbeiten Sie den Kunden",
+  "page_header_add_new_customer": "Neuen Kunden hinzufügen",
+  "first_name": "Vorname",
+  "last_name": "Nachname",
+  "birthdate": "Geburtstag",
+  "email": "Email",
+  "gender": "Geschlecht",
+  "created_at": "Hergestellt in",
+  "updated_at": "Aktualisiert am",
+  "actions": "Aktionen",
+  "button_edit_customer": "Bearbeiten Sie den Kunden",
+  "button_reset": "Zurücksetzen",
+  "button_add_new_customer": "Neuen Kunden hinzufügen",
+  "button_show_all_customers": "Alle Kunden anzeigen"
+}

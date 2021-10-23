@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/ekateryna-tln/wallester_task/internal/config"
 	"github.com/ekateryna-tln/wallester_task/internal/driver"
@@ -23,7 +25,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.SQL.Close()
+	defer func(SQL *sql.DB) {
+		err := SQL.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(db.SQL)
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -44,6 +51,8 @@ func run() (*driver.DB, error) {
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.CookieSecure
 	app.Session = session
+
+	InitLocaleBundle()
 
 	// connect to database
 	log.Println("connection to database")

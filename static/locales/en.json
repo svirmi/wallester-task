@@ -1,0 +1,22 @@
+{
+  "page_title_home": "Customers",
+  "menu_item_home": "Home",
+  "menu_item_all_customers": "All Customers",
+  "menu_item_add_new_customer": "Add new customer",
+  "page_header_customer": "Customer",
+  "page_header_list_of_customer": "List of customers",
+  "page_header_edit_customer": "Edit the customer",
+  "page_header_add_new_customer": "Add new customer",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "birthdate": "Birthdate",
+  "email": "Email",
+  "gender": "Gender",
+  "created_at": "Created at",
+  "updated_at": "Updated at",
+  "actions": "Actions",
+  "button_edit_customer": "Edit the customer",
+  "button_reset": "Reset",
+  "button_add_new_customer": "Add new customer",
+  "button_show_all_customers": "Show all customers"
+}

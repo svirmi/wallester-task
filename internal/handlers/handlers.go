@@ -56,7 +56,7 @@ func (repository *Repository) ShowAllCustomers(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		log.Println("can not get customers from the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Could not get customers")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -74,7 +74,7 @@ func (repository *Repository) SearchCustomers(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		log.Println("can not parse form:", err)
 		repository.App.Session.Put(r.Context(), "error", "Something went wrong. Please contact to customer support.")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -83,13 +83,13 @@ func (repository *Repository) SearchCustomers(w http.ResponseWriter, r *http.Req
 
 	if !form.MinLength("search_expression", minSearchLen) {
 		repository.App.Session.Put(r.Context(), "warning", fmt.Sprintf("Search field must to have at list %d characters", minSearchLen))
-		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
 	if searchExpression == "" {
 		repository.App.Session.Put(r.Context(), "warning", "Please enter First name or Last name to search")
-		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -98,7 +98,7 @@ func (repository *Repository) SearchCustomers(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		log.Println("can not get customer search result, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Could not get customers")
-		http.Redirect(w, r, "/customers", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -119,7 +119,7 @@ func (repository *Repository) ShowCustomer(w http.ResponseWriter, r *http.Reques
 	id := chi.URLParam(r, "id")
 
 	if id == "" {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -127,7 +127,7 @@ func (repository *Repository) ShowCustomer(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println("wrong uuid was given:", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -135,7 +135,7 @@ func (repository *Repository) ShowCustomer(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println("can not get the customer from the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -162,7 +162,7 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		log.Println("wrong uuid was given:", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not edit the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -170,7 +170,7 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		log.Println("can not get the customer from the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -224,7 +224,7 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		log.Println("can not parse form:", err)
 		repository.App.Session.Put(r.Context(), "error", "Something went wrong. Please contact to customer support.")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -239,12 +239,12 @@ func (repository *Repository) AddCustomer(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		log.Println("can not insert a new customer to the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not add a new customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
 	repository.App.Session.Put(r.Context(), "flash", fmt.Sprintf("Customer created successfully. Customer identifier: %s", u))
-	http.Redirect(w, r, "/customers", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
 }
 
 // EditCustomer handles the posting of a customer from if edit
@@ -258,7 +258,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			log.Println("wrong uuid was given:", err)
 			repository.App.Session.Put(r.Context(), "error", "Can not edit the customer")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 			return
 		}
 	}
@@ -267,7 +267,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println("can not parse form:", err)
 		repository.App.Session.Put(r.Context(), "error", "Something went wrong. Please contact to customer support.")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -283,7 +283,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println("can not get the customer from the database, ", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not find the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
@@ -298,10 +298,16 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println("can not update the customer:", err)
 		repository.App.Session.Put(r.Context(), "error", "Can not update the customer")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/%s", repository.App.CurrentLocale), http.StatusSeeOther)
 		return
 	}
 
 	repository.App.Session.Put(r.Context(), "flash", fmt.Sprintf("Customer updated successfully. Customer identifier: %s", u))
-	http.Redirect(w, r, "/customers", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
+}
+
+func (repository *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
+	repository.App.Session.Put(r.Context(), "error", "Page not found")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return
 }

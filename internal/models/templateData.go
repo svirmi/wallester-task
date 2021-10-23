@@ -6,11 +6,15 @@ import (
 
 //TemplateData holds data sent from handlers to templates
 type TemplateData struct {
-	Data            map[string]interface{}
-	CSRFToken       string
-	Form            *forms.Form
-	Error           string
-	Flash           string
-	Warning         string
-	OverrideWarning string
+	Data                    map[string]interface{}
+	CSRFToken               string
+	Form                    *forms.Form
+	Error                   string
+	Flash                   string
+	Warning                 string
+	OverrideWarning         string
+	TemplateSetup           string
+	CurrentLanguage         string
+	AllowedLocales          []string
+	CurrentUrlWithoutLocale string
 }
