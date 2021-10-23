@@ -12,3 +12,8 @@
     height: 30px;
     padding: 0 10px;
 }
+
+#birthdate {
+    background-color: #fff;
+    opacity: 1;
+}

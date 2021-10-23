@@ -69,7 +69,7 @@ func (repository *Repository) ShowAllCustomers(w http.ResponseWriter, r *http.Re
 
 // SearchCustomers renders the search customer page
 func (repository *Repository) SearchCustomers(w http.ResponseWriter, r *http.Request) {
-	minSearchLen := 3
+	minSearchLen := 2
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("can not parse form:", err)

@@ -13,7 +13,11 @@ import (
 	"time"
 )
 
-const portNumber = ":8080"
+// Parameters should be set according to personal settings
+const portNumber = ":80"
+const dbName = ""
+const dbUser = ""
+const dbPass = ""
 
 var app config.App
 var session *scs.SessionManager
@@ -56,7 +60,7 @@ func run() (*driver.DB, error) {
 
 	// connect to database
 	log.Println("connection to database")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=wallester user=postgres password=Saule1234")
+	db, err := driver.ConnectSQL(fmt.Sprintf("host=localhost port=5432 dbname=%s user=%s password=%s", dbName, dbUser, dbPass))
 	if err != nil {
 		log.Fatal("cannot connect to database:", err)
 		return nil, err

@@ -7,10 +7,10 @@
     {{$pageHeader := ""}}
     {{$actionText := ""}}
     {{if ne $customer.Uuid ""}}
-        {{$pageHeader = getTranslation "page_header_add_new_customer"}}
+        {{$pageHeader = getTranslation "page_header_edit_customer"}}
         {{$actionText = getTranslation "button_edit_customer"}}
     {{else}}
-        {{$pageHeader = getTranslation "page_header_edit_customer"}}
+        {{$pageHeader = getTranslation "page_header_add_new_customer"}}
         {{$actionText = getTranslation "button_add_new_customer"}}
     {{end}}
     <div class="container">
@@ -18,7 +18,8 @@
             <div class="col">
                 <h3 class="text-center mt-4">{{$pageHeader}}</h3>
 
-                <form action="/{{.CurrentLanguage}}/customer{{with $customer.Uuid}}/{{.}}{{end}}" method="post" novalidate>
+                <form action="/{{.CurrentLanguage}}/customer{{with $customer.Uuid}}/{{.}}{{end}}"
+                      class="needs-validation" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
                     <input type="hidden" name="updated_at" value="{{$customer.UpdatedAt}}">
 
@@ -46,7 +47,7 @@
                             <label class="text-danger">{{.}}</label>
                         {{end}}
                         <input type="text" name="birthdate" id="birthdate" autocomplete="off" value="{{$customer.Birthdate}}" required
-                        class="form-control{{with .Form.Errors.Get "birthdate"}} is-invalid {{end}}">
+                        class="form-control{{with .Form.Errors.Get "birthdate"}} is-invalid {{end}}" readonly="readonly">
                     </div>
 
                     <div class="form-group mt-3">
@@ -54,7 +55,7 @@
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="text" name="email" id="email" autocomplete="on" value="{{$customer.Email}}" required
+                        <input type="email" name="email" id="email" autocomplete="on" value="{{$customer.Email}}" required
                         class="form-control{{with .Form.Errors.Get "email"}} is-invalid {{end}}">
                     </div>
 
@@ -97,6 +98,7 @@
 
 
         {{$customer := index .Data "customer"}}
+        {{$currentLanguage := .CurrentLanguage}}
         {{with .OverrideWarning}}
             Swal.fire({
                 title: `Information about the customer was changed by other administrator.
@@ -109,7 +111,7 @@
                 if (result.isConfirmed) {
                     document.getElementById('js_customer_form_btn').click()
                 } else if (result.isDenied) {
-                    window.location.href = '/{{.CurrentLanguage}}/customer/' + {{$customer.Uuid}}
+                    window.location.href = '/{{$currentLanguage}}/customer/' + {{$customer.Uuid}}
                 }
             })
         {{end}}

@@ -10,7 +10,7 @@
 {{$currentLanguage := .CurrentLanguage}}
     <div class="row mt-3 align-items-center">
         <div class="col-9">
-            <form action="/{{$currentLanguage}}/customers/search" method="post" novalidate>
+            <form action="/{{$currentLanguage}}/customers/search" method="post" class="needs-validation" novalidate id="js_search_customer">
                 <input type="hidden" name="csrf_token"
                        value="{{.CSRFToken}}">
                 <div class="row">
@@ -106,5 +106,14 @@
                 { select: [8], sortable: false },
             ]
         })
+
+        document.getElementById('js_search_customer').onsubmit = function() {
+            let searchFor = document.getElementById("search_expression").value
+            if (searchFor.length < 2) {
+                notify("Please enter at list 2 characters to search", "error")
+                return false;
+            }
+        };
+
     </script>
 {{end}}
