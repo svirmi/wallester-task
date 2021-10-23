@@ -3,7 +3,6 @@ package dbrepo
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/ekateryna-tln/wallester_task/internal/models"
 	"github.com/gofrs/uuid"
 	"time"
@@ -91,7 +90,6 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 	defer cancel()
 
 	uuid, err := uuid.NewV4()
-	fmt.Println(uuid)
 	if err != nil {
 		return "", err
 	}

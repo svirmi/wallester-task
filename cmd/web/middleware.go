@@ -25,8 +25,8 @@ func LoadSession(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
 }
 
-// Test loads and save the session on every request
-func Test(next http.Handler) http.Handler {
+// URLHandler adds locale if it is empty, removes slashes
+func URLHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestUri := r.RequestURI
 		lastChar := requestUri[len(requestUri)-1:]

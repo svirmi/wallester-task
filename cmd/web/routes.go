@@ -13,7 +13,7 @@ func routes() http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(LoadSession)
 	mux.Use(NoSurf)
-	mux.Use(Test)
+	mux.Use(URLHandler)
 
 	mux.Get("/{locale}", handlers.Repo.ShowHomePage)
 	mux.Get("/{locale}/customers", handlers.Repo.ShowAllCustomers)
