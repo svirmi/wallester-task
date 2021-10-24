@@ -50,8 +50,6 @@ func (repository *Repository) ShowHomePage(w http.ResponseWriter, r *http.Reques
 
 // ShowAllCustomers shows all customers
 func (repository *Repository) ShowAllCustomers(w http.ResponseWriter, r *http.Request) {
-	var customers []models.Customer
-
 	customers, err := repository.DB.GetAllCustomers()
 	if err != nil {
 		log.Println("can not get customers from the database, ", err)
@@ -145,7 +143,6 @@ func (repository *Repository) ShowCustomer(w http.ResponseWriter, r *http.Reques
 	if err = render.Template(w, r, "customer.page.tmpl", &models.TemplateData{Data: data}); err != nil {
 		log.Fatal("can not render template:", err)
 	}
-	return
 }
 
 // ShowCustomerForm renders the add customer page and displays form
@@ -332,5 +329,4 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 func (repository *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	repository.App.Session.Put(r.Context(), "error", "Page not found")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	return
 }
