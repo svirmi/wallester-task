@@ -14,10 +14,12 @@ import (
 )
 
 // Parameters should be set according to personal settings
-const portNumber = ":80"
+const portNumber = ":8080"
 const dbName = ""
 const dbUser = ""
 const dbPass = ""
+const dbHost = ""
+const dbPort = ""
 
 var app config.App
 var session *scs.SessionManager
@@ -54,7 +56,7 @@ func run() (*driver.DB, error) {
 	InitLocaleBundle()
 
 	// connect to database
-	db, err := driver.ConnectSQL(fmt.Sprintf("host=localhost port=5432 dbname=%s user=%s password=%s", dbName, dbUser, dbPass))
+	db, err := driver.ConnectSQL(fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s", dbHost, dbPort, dbName, dbUser, dbPass))
 	if err != nil {
 		return nil, err
 	}
