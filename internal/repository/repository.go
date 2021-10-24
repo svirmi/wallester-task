@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/ekateryna-tln/wallester_task/internal/models"
+	"github.com/ekateryna-tln/wallester-task/internal/models"
 	"github.com/gofrs/uuid"
 )
 

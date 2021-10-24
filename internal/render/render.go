@@ -3,8 +3,8 @@ package render
 import (
 	"errors"
 	"fmt"
-	"github.com/ekateryna-tln/wallester_task/internal/config"
-	"github.com/ekateryna-tln/wallester_task/internal/models"
+	"github.com/ekateryna-tln/wallester-task/internal/config"
+	"github.com/ekateryna-tln/wallester-task/internal/models"
 	"github.com/justinas/nosurf"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"html/template"

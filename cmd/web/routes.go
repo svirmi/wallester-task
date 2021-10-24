@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ekateryna-tln/wallester_task/internal/handlers"
+	"github.com/ekateryna-tln/wallester-task/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"

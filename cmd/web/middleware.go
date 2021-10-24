@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ekateryna-tln/wallester_task/internal/helpers"
+	"github.com/ekateryna-tln/wallester-task/internal/helpers"
 	"github.com/justinas/nosurf"
 	"net/http"
 	"strings"

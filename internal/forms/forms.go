@@ -3,7 +3,7 @@ package forms
 import (
 	"fmt"
 	"github.com/asaskevich/govalidator"
-	"github.com/ekateryna-tln/wallester_task/internal/enums"
+	"github.com/ekateryna-tln/wallester-task/internal/enums"
 	strip "github.com/grokify/html-strip-tags-go"
 	"net/url"
 	"strings"
