@@ -20,13 +20,13 @@
                                 {{getTranslation "first_name"}}/{{getTranslation "last_name"}}:
                             </label>
                             <input type="text" name="search_expression" id="search_expression" autocomplete="off" value="{{index .Data "search_expression"}}" required
-                                   class="form-control">
+                                   class="form-control" minlength="2">
                         </div>
                     </div>
 
                     <div class="col-4 d-flex">
                         <div class="me-4">
-                            <input type="submit" class="btn btn-primary search-btn" value="Search customer">
+                            <input type="submit" class="btn btn-primary search-btn" value="{{getTranslation "button_search_customer"}}">
                         </div>
                         <a href="/{{$currentLanguage}}/customers" class="btn btn-secondary reset-btn">{{getTranslation "button_reset"}}</a>
                     </div>

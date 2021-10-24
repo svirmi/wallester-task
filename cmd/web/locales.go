@@ -14,14 +14,17 @@ var currentLocale = ""
 var pathToLocales = "./static/locales"
 var allowedLocales = []string{"en", "de"}
 
+// GetAllowedLocales returns a bunch of allowed locales
 func GetAllowedLocales() []string {
 	return allowedLocales
 }
 
+// GetCurrentLocale returns a current locale
 func GetCurrentLocale() string {
 	return currentLocale
 }
 
+// InitLocaleBundle initialises app locales bundle
 func InitLocaleBundle() {
 	bundle = i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
@@ -35,6 +38,7 @@ func InitLocaleBundle() {
 	}
 }
 
+// SetCurrentLocale sets current locale
 func SetCurrentLocale(locale string) *i18n.Localizer {
 	currentLocale = locale
 	if currentLocale == "" {

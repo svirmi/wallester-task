@@ -18,5 +18,6 @@
   "button_edit_customer": "Edit the customer",
   "button_reset": "Reset",
   "button_add_new_customer": "Add new customer",
-  "button_show_all_customers": "Show all customers"
+  "button_show_all_customers": "Show all customers",
+  "button_search_customer": "Search customer"
 }

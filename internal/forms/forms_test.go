@@ -255,3 +255,31 @@ func TestForm_GenderIsValid(t *testing.T) {
 		})
 	}
 }
+
+func TestForm_CheckHTML(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    url.Values
+		want    bool
+		wantMsg string
+	}{
+		{"valid_field", url.Values{"first_name": {"valid_value"}}, true, ""},
+		{"invalid_field", url.Values{"first_name": {"<div>invalid_value</div>"}}, false, "This field should not contain HTML"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := &Form{
+				Values: tt.args,
+				Errors: errors(map[string][]string{}),
+			}
+			f.CheckHTML("first_name")
+
+			if got := f.Valid(); got != tt.want {
+				t.Errorf("MaxLength() = %v, want %v", got, tt.want)
+			}
+			if got := f.Errors.Get("first_name"); got != tt.wantMsg {
+				t.Errorf("MaxLength() = %v, want %v", got, tt.wantMsg)
+			}
+		})
+	}
+}

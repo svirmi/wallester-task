@@ -44,31 +44,23 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
+// run adds app settings, connects to the database and sets template cache for the application
 func run() (*driver.DB, error) {
 
 	app.UseCache = false
 	app.CookieSecure = false
-
-	session = scs.New()
-	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = app.CookieSecure
-	app.Session = session
+	app.Session = serSession()
 
 	InitLocaleBundle()
 
 	// connect to database
-	log.Println("connection to database")
 	db, err := driver.ConnectSQL(fmt.Sprintf("host=localhost port=5432 dbname=%s user=%s password=%s", dbName, dbUser, dbPass))
 	if err != nil {
-		log.Fatal("cannot connect to database:", err)
 		return nil, err
 	}
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("create template cache error:", err)
 		return nil, err
 	}
 	app.TemplateCache = tc
@@ -78,4 +70,14 @@ func run() (*driver.DB, error) {
 	handlers.SetHandlersRepo(handlers.NewRepo(&app, db))
 
 	return db, nil
+}
+
+// serSession sets session parameters
+func serSession() *scs.SessionManager {
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.CookieSecure
+	return session
 }

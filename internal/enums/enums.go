@@ -9,6 +9,7 @@ const (
 
 var names = [...]string{"Male", "Female"}
 
+// String overrides string method for the enum and returns value depends of given key
 func (gender Gender) String() string {
 	if gender < Male || gender > Female {
 		return "Unknown"
@@ -16,6 +17,7 @@ func (gender Gender) String() string {
 	return names[gender]
 }
 
+// Exists checks is the given value exists in the enum
 func Exists(requiredName string) bool {
 	for _, name := range names {
 		if requiredName == name {

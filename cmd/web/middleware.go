@@ -46,7 +46,7 @@ func URLHandler(next http.Handler) http.Handler {
 		app.Locales = SetCurrentLocale(locale)
 		app.CurrentLocale = GetCurrentLocale()
 		app.AllowedLocales = GetAllowedLocales()
-		app.CurrentUrlWithoutLocale = strings.Replace(r.URL.Path, locale+"/", "", -1)
+		app.CurrentUrlWithoutLocale = strings.Replace(r.URL.Path, fmt.Sprintf("/%s", locale), "", -1)
 		next.ServeHTTP(w, r)
 	})
 }

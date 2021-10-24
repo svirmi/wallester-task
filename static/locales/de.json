@@ -18,5 +18,6 @@
   "button_edit_customer": "Bearbeiten Sie den Kunden",
   "button_reset": "Zurücksetzen",
   "button_add_new_customer": "Neuen Kunden hinzufügen",
-  "button_show_all_customers": "Alle Kunden anzeigen"
+  "button_show_all_customers": "Alle Kunden anzeigen",
+  "button_search_customer": "Kunden suchen"
 }

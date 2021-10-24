@@ -148,7 +148,7 @@ func (repository *Repository) ShowCustomer(w http.ResponseWriter, r *http.Reques
 	return
 }
 
-// ShowCustomerForm renders the add customer page and display form
+// ShowCustomerForm renders the add customer page and displays form
 func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Request) {
 
 	var customer models.Customer
@@ -177,6 +177,7 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 	repository.renderCustomerFormTemplate(w, r, customer, forms.New(nil))
 }
 
+// getCustomerFromIncomingForm gets customer data from form and validates the form data
 func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (models.Customer, *forms.Form) {
 
 	customer := models.Customer{
@@ -192,6 +193,7 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	form.IsEmail("email")
 	form.MaxLength("first_name", 100)
 	form.MaxLength("last_name", 100)
+	form.CheckHTML("first_name", "last_name")
 	birthdate, ok := form.IsValidDate("birthdate")
 	if ok {
 		form.IsValidAge("birthdate", birthdate, 18, 60)
@@ -202,11 +204,12 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	return customer, form
 }
 
+// renderCustomerFormTemplate renders customer form template and sets main customer form data
 func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
 	data := make(map[string]interface{})
 	data["customer"] = customer
-	data["minDate"] = time.Now().AddDate(-60, 0, -1)
-	data["maxDate"] = time.Now().AddDate(-18, 0, +1)
+	data["minDate"] = minDate()
+	data["maxDate"] = maxDate()
 	data["genderMale"] = enums.Male.String()
 	data["genderFemale"] = enums.Female.String()
 	if err := render.Template(w, r, "customer-form.page.tmpl", &models.TemplateData{
@@ -216,6 +219,24 @@ func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, 
 		log.Fatal("can not render template:", err)
 	}
 
+}
+
+// minDate returns min allowing birthdate
+func minDate() time.Time {
+	today := time.Now()
+	year, month, day := today.Date()
+	startToday := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	startToday = startToday.AddDate(-61, 0, 1)
+	return startToday
+}
+
+// minDate returns max allowing birthdate
+func maxDate() time.Time {
+	today := time.Now()
+	year, month, day := today.Date()
+	startToday := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	startToday = startToday.AddDate(-18, 0, 0)
+	return startToday
 }
 
 // AddCustomer handles the posting of a customer from if add
@@ -274,11 +295,6 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	customer, form := repository.getCustomerFromIncomingForm(r.PostForm)
 	customer.Uuid = u.String()
 
-	if !form.Valid() {
-		repository.renderCustomerFormTemplate(w, r, customer, form)
-		return
-	}
-
 	existedCustomer, err := repository.DB.GetCustomerByID(u)
 	if err != nil {
 		log.Println("can not get the customer from the database, ", err)
@@ -290,6 +306,12 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	if existedCustomer.UpdatedAt.String() != form.Get("updated_at") {
 		customer.UpdatedAt = existedCustomer.UpdatedAt
 		repository.App.Session.Put(r.Context(), "override_warning", "show")
+		repository.renderCustomerFormTemplate(w, r, customer, form)
+		return
+	}
+
+	if !form.Valid() {
+		customer.UpdatedAt = existedCustomer.UpdatedAt
 		repository.renderCustomerFormTemplate(w, r, customer, form)
 		return
 	}
@@ -306,6 +328,7 @@ func (repository *Repository) EditCustomer(w http.ResponseWriter, r *http.Reques
 	http.Redirect(w, r, fmt.Sprintf("/%s/customers", repository.App.CurrentLocale), http.StatusSeeOther)
 }
 
+// PageNotFound sets not found error message to the session and redirects to home page in case if page not found
 func (repository *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	repository.App.Session.Put(r.Context(), "error", "Page not found")
 	http.Redirect(w, r, "/", http.StatusSeeOther)

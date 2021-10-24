@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/asaskevich/govalidator"
 	"github.com/ekateryna-tln/wallester_task/internal/enums"
+	strip "github.com/grokify/html-strip-tags-go"
 	"net/url"
 	"strings"
 	"time"
@@ -28,6 +29,16 @@ func (f *Form) CheckRequiredFields(fields ...string) {
 	for _, field := range fields {
 		if strings.TrimSpace(f.Get(field)) == "" {
 			f.Errors.Add(field, "This field can not be empty")
+		}
+	}
+}
+
+// CheckHTML checks if the code contains html
+func (f *Form) CheckHTML(fields ...string) {
+	for _, field := range fields {
+		stripped := strip.StripTags(f.Get(field))
+		if len(f.Get(field)) != len(stripped) {
+			f.Errors.Add(field, "This field should not contain HTML")
 		}
 	}
 }
@@ -97,12 +108,14 @@ func (f *Form) IsValidAge(field string, date time.Time, minAge, maxAge int) {
 
 }
 
+// IsValidGender checks it the gender valid
 func (f *Form) IsValidGender(field string) {
 	if !enums.Exists(f.Get(field)) {
 		f.Errors.Add(field, "Please select gender")
 	}
 }
 
+// getAge returns customer age according to his birthdate
 func getAge(birthday time.Time) int {
 	now := time.Now()
 	years := now.Year() - birthday.Year()
