@@ -9,7 +9,7 @@ CREATE TABLE public.customers
     id           uuid         NOT NULL,
     first_name   varchar(100) NOT NULL,
     last_name    varchar(100) NOT NULL,
-    birthdate    timestamptz  NOT NULL,
+    birthdate    timestamp    NOT NULL,
     email        varchar(255) NOT NULL,
     gender       varchar(25)  NOT NULL,
     search_field varchar(210) NOT NULL,
