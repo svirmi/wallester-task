@@ -28,7 +28,7 @@ Also the app could be used without running migrations.
 Please find the database script in the wallester_db_query.sql file
 
 ## static
-Contains static element of the app as scc, javascript and images
+Contains static element of the app as css, javascript and images
 
 ## templates
 Contain app templates
