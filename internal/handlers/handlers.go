@@ -19,6 +19,8 @@ import (
 	"strings"
 )
 
+const maxNameLen = 100
+
 // Repo the repository used by handlers
 var Repo *Repository
 
@@ -60,7 +62,11 @@ func (repository *Repository) ShowAllCustomers(w http.ResponseWriter, r *http.Re
 
 	data := make(map[string]interface{})
 	data["customers"] = customers
-	if err = render.Template(w, r, "customers-list.page.tmpl", &models.TemplateData{Form: forms.New(nil), Data: data}); err != nil {
+	data["maxNameLen"] = maxNameLen
+	if err = render.Template(w, r, "customers-list.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	}); err != nil {
 		log.Fatal("can not render template:", err)
 	}
 }
@@ -176,7 +182,6 @@ func (repository *Repository) ShowCustomerForm(w http.ResponseWriter, r *http.Re
 
 // getCustomerFromIncomingForm gets customer data from form and validates the form data
 func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (models.Customer, *forms.Form) {
-
 	customer := models.Customer{
 		FirstName:   formData.Get("first_name"),
 		LastName:    formData.Get("last_name"),
@@ -188,8 +193,8 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 	form := forms.New(formData)
 	form.CheckRequiredFields("first_name", "last_name", "email", "birthdate")
 	form.IsEmail("email")
-	form.MaxLength("first_name", 100)
-	form.MaxLength("last_name", 100)
+	form.MaxLength("first_name", maxNameLen)
+	form.MaxLength("last_name", maxNameLen)
 	form.CheckHTML("first_name", "last_name")
 	birthdate, ok := form.IsValidDate("birthdate")
 	if ok {
@@ -205,6 +210,7 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
 	data := make(map[string]interface{})
 	data["customer"] = customer
+	data["maxNameLen"] = maxNameLen
 	data["minDate"] = helpers.MinDate()
 	data["maxDate"] = helpers.MaxDate()
 	data["genderMale"] = enums.Male.String()

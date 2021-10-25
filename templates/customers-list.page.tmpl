@@ -20,7 +20,7 @@
                                 {{getTranslation "first_name"}}/{{getTranslation "last_name"}}:
                             </label>
                             <input type="text" name="search_expression" id="search_expression" autocomplete="off" value="{{index .Data "search_expression"}}" required
-                                   class="form-control" minlength="2">
+                                   class="form-control" minlength="2" maxlength="{{index .Data "maxNameLen"}}">
                         </div>
                     </div>
 
