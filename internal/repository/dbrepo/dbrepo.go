@@ -2,6 +2,7 @@ package dbrepo
 
 import (
 	"database/sql"
+
 	"github.com/ekateryna-tln/wallester-task/internal/config"
 	"github.com/ekateryna-tln/wallester-task/internal/repository"
 )

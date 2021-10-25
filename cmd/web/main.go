@@ -3,18 +3,20 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/alexedwards/scs/v2"
 	"github.com/ekateryna-tln/wallester-task/internal/config"
 	"github.com/ekateryna-tln/wallester-task/internal/driver"
 	"github.com/ekateryna-tln/wallester-task/internal/handlers"
 	"github.com/ekateryna-tln/wallester-task/internal/render"
-	"log"
-	"net/http"
-	"time"
 )
 
-// Parameters should be set according to personal settings
 const portNumber = ":8080"
+
+// Parameters should be set according to personal settings
 const dbName = ""
 const dbUser = ""
 const dbPass = ""
@@ -31,12 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer func(SQL *sql.DB) {
-		err := SQL.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}(db.SQL)
+	defer closeDB(db.SQL)
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -82,4 +79,12 @@ func serSession() *scs.SessionManager {
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.CookieSecure
 	return session
+}
+
+// closeDB closes SQL connection
+func closeDB(SQL *sql.DB) {
+	err := SQL.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

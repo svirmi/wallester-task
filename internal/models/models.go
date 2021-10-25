@@ -17,3 +17,16 @@ type Customer struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
+
+// EqualBase compares base fields of customers structures (FirstName, LastName, Birthdate, Email, Gender),
+// excluded auto generated fields like Uuid, BirthdateForm, SearchField, CreatedAt, UpdatedAt
+func (c *Customer) EqualBase(customer Customer) bool {
+	if c.FirstName == customer.FirstName &&
+		c.LastName == customer.LastName &&
+		c.Birthdate == customer.Birthdate &&
+		c.Email == customer.Email &&
+		c.Gender == customer.Gender {
+		return true
+	}
+	return false
+}

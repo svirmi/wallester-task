@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/ekateryna-tln/wallester-task/internal/helpers"
-	"github.com/justinas/nosurf"
 	"net/http"
 	"strings"
+
+	"github.com/ekateryna-tln/wallester-task/internal/helpers"
+	"github.com/justinas/nosurf"
 )
 
 // NoSurf adds CSRF protection to all POST requests

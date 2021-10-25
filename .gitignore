@@ -1,3 +1,4 @@
 .idea
 database.yml
 /internal/forms/coverage.out
+/internal/repository/dbrepo/coverage.out

@@ -2,12 +2,13 @@ package forms
 
 import (
 	"fmt"
-	"github.com/asaskevich/govalidator"
-	"github.com/ekateryna-tln/wallester-task/internal/enums"
-	strip "github.com/grokify/html-strip-tags-go"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/asaskevich/govalidator"
+	"github.com/ekateryna-tln/wallester-task/internal/enums"
+	strip "github.com/grokify/html-strip-tags-go"
 )
 
 // Form custom form struct, embeds an url.Values object

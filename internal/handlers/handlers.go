@@ -6,6 +6,7 @@ import (
 	"github.com/ekateryna-tln/wallester-task/internal/driver"
 	"github.com/ekateryna-tln/wallester-task/internal/enums"
 	"github.com/ekateryna-tln/wallester-task/internal/forms"
+	"github.com/ekateryna-tln/wallester-task/internal/helpers"
 	"github.com/ekateryna-tln/wallester-task/internal/models"
 	"github.com/ekateryna-tln/wallester-task/internal/render"
 	"github.com/ekateryna-tln/wallester-task/internal/repository"
@@ -16,7 +17,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 // Repo the repository used by handlers
@@ -205,8 +205,8 @@ func (repository *Repository) getCustomerFromIncomingForm(formData url.Values) (
 func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, r *http.Request, customer models.Customer, form *forms.Form) {
 	data := make(map[string]interface{})
 	data["customer"] = customer
-	data["minDate"] = minDate()
-	data["maxDate"] = maxDate()
+	data["minDate"] = helpers.MinDate()
+	data["maxDate"] = helpers.MaxDate()
 	data["genderMale"] = enums.Male.String()
 	data["genderFemale"] = enums.Female.String()
 	if err := render.Template(w, r, "customer-form.page.tmpl", &models.TemplateData{
@@ -216,24 +216,6 @@ func (repository *Repository) renderCustomerFormTemplate(w http.ResponseWriter, 
 		log.Fatal("can not render template:", err)
 	}
 
-}
-
-// minDate returns min allowing birthdate
-func minDate() time.Time {
-	today := time.Now()
-	year, month, day := today.Date()
-	startToday := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
-	startToday = startToday.AddDate(-61, 0, 1)
-	return startToday
-}
-
-// minDate returns max allowing birthdate
-func maxDate() time.Time {
-	today := time.Now()
-	year, month, day := today.Date()
-	startToday := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
-	startToday = startToday.AddDate(-18, 0, 0)
-	return startToday
 }
 
 // AddCustomer handles the posting of a customer from if add

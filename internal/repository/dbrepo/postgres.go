@@ -3,9 +3,10 @@ package dbrepo
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/ekateryna-tln/wallester-task/internal/models"
 	"github.com/gofrs/uuid"
-	"time"
 )
 
 // GetAllCustomers returns a slice of all customers
@@ -89,7 +90,7 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	uuid, err := uuid.NewV4()
+	u, err := uuid.NewV4()
 	if err != nil {
 		return "", err
 	}
@@ -99,7 +100,7 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 			values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	_, err = dbRepo.DB.ExecContext(ctx, stmt,
-		uuid,
+		u,
 		c.FirstName,
 		c.LastName,
 		c.Birthdate,
@@ -114,11 +115,11 @@ func (dbRepo *postgresDBRepo) InsertCustomer(c models.Customer) (string, error) 
 		return "", err
 	}
 
-	return uuid.String(), nil
+	return u.String(), nil
 }
 
 // GetCustomerByID returns one customer by id
-func (dbRepo *postgresDBRepo) GetCustomerByID(uuid uuid.UUID) (models.Customer, error) {
+func (dbRepo *postgresDBRepo) GetCustomerByID(u uuid.UUID) (models.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -129,7 +130,7 @@ func (dbRepo *postgresDBRepo) GetCustomerByID(uuid uuid.UUID) (models.Customer, 
 		where id = $1`
 
 	row := dbRepo.DB.QueryRowContext(ctx, stmt,
-		uuid,
+		u,
 	)
 	err := row.Scan(
 		&customer.Uuid,
@@ -174,6 +175,22 @@ func (dbRepo *postgresDBRepo) UpdateCustomer(c models.Customer) error {
 		c.SearchField,
 		time.Now(),
 	)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// TruncateCustomer removes all customers. Created for the test purpose.
+// Should be used carefully.
+func (dbRepo *postgresDBRepo) TruncateCustomer() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `truncate customers`
+
+	_, err := dbRepo.DB.ExecContext(ctx, query)
 
 	if err != nil {
 		return err

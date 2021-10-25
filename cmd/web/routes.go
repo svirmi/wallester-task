@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/ekateryna-tln/wallester-task/internal/handlers"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
+
+	"github.com/ekateryna-tln/wallester-task/internal/handlers"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 // routes contains routers and middleware setup
@@ -27,7 +28,7 @@ func routes() http.Handler {
 	mux.Get("/{locale}/customer", handlers.Repo.ShowCustomerForm)
 	mux.Post("/{locale}/customer", handlers.Repo.AddCustomer)
 
-	mux.Get("/*", handlers.Repo.PageNotFound)
+	mux.NotFound(handlers.Repo.PageNotFound)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

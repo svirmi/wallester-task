@@ -3,14 +3,15 @@ package render
 import (
 	"errors"
 	"fmt"
-	"github.com/ekateryna-tln/wallester-task/internal/config"
-	"github.com/ekateryna-tln/wallester-task/internal/models"
-	"github.com/justinas/nosurf"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"time"
+
+	"github.com/ekateryna-tln/wallester-task/internal/config"
+	"github.com/ekateryna-tln/wallester-task/internal/models"
+	"github.com/justinas/nosurf"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 var functions = template.FuncMap{
