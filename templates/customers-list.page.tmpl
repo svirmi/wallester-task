@@ -51,8 +51,8 @@
                 <thead>
                 <tr>
                     <th>ID&nbsp;&nbsp;</th>
-                    <th>{{getTranslation "first_name"}}</th>
-                    <th>{{getTranslation "last_name"}}</th>
+                    <th class="max_width">{{getTranslation "first_name"}}</th>
+                    <th class="max_width">{{getTranslation "last_name"}}</th>
                     <th>{{getTranslation "birthdate"}}</th>
                     <th>{{getTranslation "email"}}</th>
                     <th>{{getTranslation "gender"}}</th>
@@ -67,8 +67,8 @@
                     {{$i = add $i 1}}
                     <tr>
                         <td id="{{.Uuid}}">{{$i}}</td>
-                        <td>{{.FirstName}}</td>
-                        <td>{{.LastName}}</td>
+                        <td class="max_width">{{.FirstName}}</td>
+                        <td class="max_width">{{.LastName}}</td>
                         <td>{{formatDate .Birthdate}}</td>
                         <td>{{.Email}}</td>
                         <td>{{.Gender}}</td>

@@ -17,3 +17,8 @@
     background-color: #fff;
     opacity: 1;
 }
+
+.max_width {
+    max-width: 200px; !important;
+    overflow: hidden;
+}
