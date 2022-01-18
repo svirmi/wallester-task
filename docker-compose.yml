@@ -3,6 +3,7 @@ services:
 
   app:
     container_name: wallester_app
+    restart: on-failure
     build: .
     ports: 
       - 8080:8080 
