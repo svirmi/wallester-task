@@ -17,11 +17,11 @@ import (
 const portNumber = ":8080"
 
 // Parameters should be set according to personal settings
-const dbName = ""
-const dbUser = ""
-const dbPass = ""
-const dbHost = ""
-const dbPort = ""
+const dbName = "wallester"
+const dbUser = "developer"
+const dbPass = "password"
+const dbHost = "dbase"
+const dbPort = "5432"
 
 var app config.App
 var session *scs.SessionManager
