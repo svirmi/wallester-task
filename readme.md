@@ -1,5 +1,19 @@
 # Wallester Task
 
+Forked from [https://github.com/ekateryna-tln/wallester-task](https://github.com/ekateryna-tln/wallester-task) and containerized incl. database seeding
+
+Clone the repo and run (docker should be installed on your machine)
+```bash
+docker-compose up --build
+```
+Open [http://0.0.0.0:8080](http://0.0.0.0:8080) in browser to see working application
+
+#### Edit conflicts
+To prevent record edit conflicts database lock or concurrency control can be used:
+- [https://www.postgresql.org/docs/current/mvcc.html](https://www.postgresql.org/docs/current/mvcc.html)
+- [https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example](https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example)
+
+
 This repository contains a web application example to work with a customer object.
 
 - Build in GO version 1.17.1
