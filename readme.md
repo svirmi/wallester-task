@@ -12,7 +12,7 @@ Open [http://0.0.0.0:8080](http://0.0.0.0:8080) in browser to see working applic
 To prevent record edit conflicts database lock or concurrency control can be used:
 - [https://www.postgresql.org/docs/current/mvcc.html](https://www.postgresql.org/docs/current/mvcc.html)
 - [https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example](https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example)
-
+---
 
 This repository contains a web application example to work with a customer object.
 
