@@ -13,7 +13,8 @@ To prevent record edit conflicts database lock or concurrency control can be use
 - [https://www.postgresql.org/docs/current/mvcc.html](https://www.postgresql.org/docs/current/mvcc.html)
 - [https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example](https://stackoverflow.com/questions/17768608/what-is-the-practical-use-of-timestamp-column-in-sql-server-with-example)
 ---
-
+![preview](https://github.com/svirmi/wallester-task/blob/master/wallester.png)
+---
 This repository contains a web application example to work with a customer object.
 
 - Build in GO version 1.17.1
